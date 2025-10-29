@@ -3,17 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>The global human impact on biodiversity – Notion Cards</title>
+  <title>링크 카드 갤러리</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
   <style>
     :root {
-      --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       --radius: 12px;
       --shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
       --transition: all 0.2s ease;
+      --color-link: #6366f1;
     }
+    * { box-sizing: border-box; }
     body {
-      font-family: var(--font-main);
+      font-family: var(--font);
       background: #f9fafb;
       color: #1f2937;
       margin: 0;
@@ -49,10 +51,9 @@
       border-radius: 8px;
       font-size: 1rem;
       outline: none;
-      transition: border 0.2s;
     }
     .search-box input:focus {
-      border-color: #6366f1;
+      border-color: var(--color-link);
       box-shadow: 0 0 0 3px rgba(99,102,241,0.1);
     }
     .grid {
@@ -66,75 +67,39 @@
       overflow: hidden;
       box-shadow: var(--shadow);
       transition: var(--transition);
-      border-left: 5px solid;
+      border-left: 5px solid var(--color-link);
     }
     .card:hover {
       transform: translateY(-4px);
       box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
     }
-    .card-header {
-      padding: 16px 16px 8px;
-    }
-    .card-type {
-      font-size: 0.75rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 4px;
-      opacity: 0.8;
+    .card a {
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      padding: 16px;
     }
     .card-title {
       font-weight: 600;
       font-size: 1.1rem;
-      margin: 0 0 6px;
+      margin: 0 0 8px;
       color: #111827;
     }
-    .card-meta {
-      font-size: 0.875rem;
-      color: #6b7280;
-    }
-    .card-body {
-      padding: 0 16px 16px;
-    }
-    .card-abstract {
+    .card-caption {
       font-size: 0.875rem;
       color: #4b5563;
-      margin: 12px 0 0;
+      margin: 0;
       display: -webkit-box;
       -webkit-line-clamp: 3;
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
-    .card-actions {
-      margin-top: 12px;
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 10px;
+    .card-url {
       font-size: 0.8rem;
-      font-weight: 500;
-      color: #6366f1;
-      text-decoration: none;
-      border-radius: 6px;
-      transition: background 0.2s;
+      color: #6b7280;
+      margin-top: 8px;
+      word-break: break-all;
     }
-    .btn:hover {
-      background: rgba(99,102,241,0.1);
-    }
-    .btn i { font-size: 0.9rem; }
-
-    /* Type-based colors */
-    .type-paper { border-left-color: #6366f1; }
-    .type-report { border-left-color: #f59e0b; }
-    .type-dataset { border-left-color: #10b981; }
-    .type-website { border-left-color: #8b5cf6; }
-    .type-other { border-left-color: #94a3b8; }
-
     .loading, .error {
       text-align: center;
       padding: 40px;
@@ -153,57 +118,82 @@
 <body>
   <div class="container">
     <header>
-      <h1>The global human impact on biodiversity</h1>
-      <p class="subtitle">
-        <a href="https://www.nature.com/articles/s41586-025-08752-2" target="_blank">Nature 논문</a> · 
-        <a href="https://github.com/fkeck/metabeta" target="_blank">데이터 레포</a>
-      </p>
+      <h1>링크 카드 갤러리</h1>
+      <p class="subtitle"><code>srclist</code> 파일 기반 자동 생성</p>
     </header>
 
     <div class="search-box">
-      <input type="search" id="search" placeholder="제목, 저자, 키워드로 검색..." />
+      <input type="search" id="search" placeholder="제목, 캡션, URL로 검색..." />
     </div>
 
-    <div id="stats" class="stats">데이터 로드 중...</div>
+    <div id="stats" class="stats">srclist 로딩 중...</div>
 
     <div id="loading" class="loading">
-      <i class="fas fa-spinner fa-spin"></i> data.json 로딩 중...
+      <i class="fas fa-spinner fa-spin"></i> srclist 파일 읽는 중...
     </div>
     <div id="error" class="error" style="display:none;"></div>
     <div id="cards" class="grid"></div>
   </div>
 
   <script>
-    const DATA_URL = 'https://raw.githubusercontent.com/fkeck/metabeta/main/data/data.json';
+    const SRCLIST_FILE = 'srclist'; // 동일 경로
     const loadingEl = document.getElementById('loading');
     const errorEl = document.getElementById('error');
     const cardsContainer = document.getElementById('cards');
     const searchInput = document.getElementById('search');
     const statsEl = document.getElementById('stats');
 
-    let allData = [];
+    let allItems = [];
 
-    // Fetch + Parse JSON
-    fetch(DATA_URL)
+    // 1. srclist 파일 읽기
+    fetch(SRCLIST_FILE)
       .then(r => {
-        if (!r.ok) throw new Error(`HTTP ${r.status}`);
-        return r.json();
+        if (!r.ok) throw new Error(`파일 없음: ${SRCLIST_FILE}`);
+        return r.text();
       })
-      .then(data => {
+      .then(text => {
+        const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+        const items = [];
+        for (let i = 0; i < lines.length; i += 3) {
+          const url = lines[i];
+          const caption = lines[i + 1] || '';
+          if (url && url.startsWith('http')) {
+            items.push({ url, caption });
+          }
+        }
+        if (items.length === 0) throw new Error('유효한 링크 없음');
+        allItems = items;
         loadingEl.style.display = 'none';
-        allData = Array.isArray(data) ? data : data.studies || [];
-        renderCards(allData);
-        updateStats(allData);
+        renderCards(allItems);
+        updateStats(allItems.length);
       })
       .catch(err => {
         loadingEl.style.display = 'none';
         errorEl.style.display = 'block';
-        errorEl.innerHTML = `오류: ${err.message}<br><small><a href="${DATA_URL}" target="_blank">직접 열기</a></small>`;
-        console.error(err);
+        errorEl.innerHTML = `오류: ${err.message}<br><small><code>srclist</code> 파일 확인</small>`;
       });
 
-    // Render cards
-    function renderCards(items) {
+    // 2. 카드 생성
+    function createCard(item) {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <a href="${item.url}" target="_blank">
+          <div class="card-title">${escape(getTitle(item))}</div>
+          <div class="card-caption">${escape(item.caption)}</div>
+          <div class="card-url">${escape(item.url)}</div>
+        </a>
+      `;
+      return card;
+    }
+
+    function getTitle(item) {
+      // 캡션에서 제목 추출 (괄호 앞)
+      const match = item.caption.match(/^(.+?)(?:\s*\(|$)/);
+      return match ? match[1].trim() : item.caption || new URL(item.url).hostname;
+    }
+
+    function renderCards(items).card-title {
       cardsContainer.innerHTML = '';
       if (items.length === 0) {
         cardsContainer.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:#9ca3af;">결과 없음</p>';
@@ -211,88 +201,28 @@
       }
       items.forEach(item => {
         const card = createCard(item);
-        if (card) cardsContainer.appendChild(card);
+        cardsContainer.appendChild(card);
       });
     }
 
-    // Create Notion-style card
-    function createCard(item) {
-      const title = item.title || item.Title || '제목 없음';
-      const source = item.source || item.Source || '';
-      const year = item.year || item.Year || '';
-      const url = item.url || item.URL || '';
-      const doi = item.doi || item.DOI || '';
-      const abstract = (item.abstract || item.Abstract || '').trim();
-      const type = (item.type || item.Type || 'other').toLowerCase();
-
-      // Type mapping
-      const typeMap = {
-        paper: { label: '논문', color: 'type-paper' },
-        report: { label: '보고서', color: 'type-report' },
-        dataset: { label: '데이터셋', color: 'type-dataset' },
-        website: { label: '웹사이트', color: 'type-website' }
-      };
-      const t = typeMap[type] || { label: '기타', color: 'type-other' };
-
-      const card = document.createElement('div');
-      card.className = `card ${t.color}`;
-
-      card.innerHTML = `
-        <div class="card-header">
-          <div class="card-type" style="color:${getColor(t.color)}">${t.label}</div>
-          <div class="card-title">${escape(title)}</div>
-          <div class="card-meta">${escape(source)}${year ? ` (${year})` : ''}</div>
-        </div>
-        <div class="card-body">
-          ${abstract ? `<div class="card-abstract">${escape(abstract)}</div>` : ''}
-          <div class="card-actions">
-            ${doi ? `<a href="https://doi.org/${escape(doi)}" target="_blank" class="btn"><i class="fas fa-book"></i> DOI</a>` : ''}
-            ${url && !doi ? `<a href="${escape(url)}" target="_blank" class="btn"><i class="fas fa-external-link-alt"></i> 링크</a>` : ''}
-            ${url && doi ? `<a href="${escape(url)}" target="_blank" class="btn"><i class="fas fa-link"></i> 원본</a>` : ''}
-          </div>
-        </div>
-      `;
-
-      return card;
-    }
-
-    function getColor(cls) {
-      const colors = {
-        'type-paper': '#6366f1',
-        'type-report': '#f59e0b',
-        'type-dataset': '#10b981',
-        'type-website': '#8b5cf6',
-        'type-other': '#94a3b8'
-      };
-      return colors[cls] || '#94a3b8';
+    function updateStats(count) {
+      statsEl.textContent = `총 ${count}개 링크`;
     }
 
     function escape(str) {
-      if (typeof str !== 'string') return '';
-      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+      if (!str) return '';
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
     }
 
-    function updateStats(data) {
-      const counts = data.reduce((acc, i) => {
-        const t = (i.type || i.Type || 'other').toLowerCase();
-        acc[t] = (acc[t] || 0) + 1;
-        return acc;
-      }, {});
-      const total = data.length;
-      const types = Object.entries(counts)
-        .map(([k, v]) => `${(k==='paper'?'논문':k==='report'?'보고서':k==='dataset'?'데이터셋':k==='website'?'웹':k==='other'?'기타':k)} ${v}개`)
-        .join(' · ');
-      statsEl.textContent = `총 ${total}개 항목 · ${types}`;
-    }
-
-    // Search filter
+    // 검색
     searchInput.addEventListener('input', () => {
-      const query = searchInput.value.toLowerCase().trim();
-      const filtered = allData.filter(item => {
-        const text = `${item.title} ${item.source} ${item.abstract} ${item.doi} ${item.url}`.toLowerCase();
-        return text.includes(query);
-      });
+      const q = searchInput.value.toLowerCase().trim();
+      const filtered = allItems.filter(item =>
+        item.url.toLowerCase().includes(q) ||
+        (item.caption && item.caption.toLowerCase().includes(q))
+      );
       renderCards(filtered);
     });
   </script>
