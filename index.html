@@ -3,46 +3,33 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>링크 카드 갤러리</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+  <title>The global human impact on biodiversity</title>
   <style>
     :root {
       --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       --radius: 12px;
       --shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
       --transition: all 0.2s ease;
-      --color-link: #6366f1;
+      --color-primary: #6366f1;
+      --color-bg: #f9fafb;
+      --color-card: #ffffff;
+      --color-text: #1f2937;
+      --color-muted: #6b7280;
+      --color-caption: #4b5563;
     }
-    * { box-sizing: border-box; }
+    * { box-sizing: border-box; margin:0; padding:0; }
     body {
       font-family: var(--font);
-      background: #f9fafb;
-      color: #1f2937;
-      margin: 0;
-      padding: 20px;
+      background: var(--color-bg);
+      color: var(--color-text);
       line-height: 1.6;
+      padding: 20px;
     }
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-    header {
-      text-align: center;
-      margin-bottom: 2rem;
-    }
-    h1 {
-      font-size: 1.8rem;
-      color: #111827;
-      margin: 0 0 0.5rem;
-    }
-    .subtitle {
-      color: #6b7280;
-      font-size: 1rem;
-    }
-    .search-box {
-      margin: 1.5rem 0;
-      text-align: center;
-    }
+    .container { max-width: 1200px; margin: 0 auto; }
+    header { text-align: center; margin-bottom: 2rem; }
+    h1 { font-size: 1.8rem; color: #111827; margin-bottom: 0.5rem; }
+    .subtitle { color: var(--color-muted); font-size: 1rem; }
+    .search-box { margin: 1.5rem 0; text-align: center; }
     .search-box input {
       padding: 12px 16px;
       width: 100%;
@@ -51,9 +38,10 @@
       border-radius: 8px;
       font-size: 1rem;
       outline: none;
+      transition: border 0.2s, box-shadow 0.2s;
     }
     .search-box input:focus {
-      border-color: var(--color-link);
+      border-color: var(--color-primary);
       box-shadow: 0 0 0 3px rgba(99,102,241,0.1);
     }
     .grid {
@@ -62,33 +50,33 @@
       gap: 20px;
     }
     .card {
-      background: white;
+      background: var(--color-card);
       border-radius: var(--radius);
       overflow: hidden;
       box-shadow: var(--shadow);
       transition: var(--transition);
-      border-left: 5px solid var(--color-link);
+      border-left: 5px solid var(--color-primary);
     }
     .card:hover {
       transform: translateY(-4px);
       box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
     }
     .card a {
-      text-decoration: none;
-      color: inherit;
       display: block;
       padding: 16px;
+      text-decoration: none;
+      color: inherit;
     }
     .card-title {
       font-weight: 600;
       font-size: 1.1rem;
-      margin: 0 0 8px;
+      margin-bottom: 8px;
       color: #111827;
     }
     .card-caption {
       font-size: 0.875rem;
-      color: #4b5563;
-      margin: 0;
+      color: var(--color-caption);
+      margin: 0 0 8px;
       display: -webkit-box;
       -webkit-line-clamp: 3;
       -webkit-box-orient: vertical;
@@ -96,134 +84,101 @@
     }
     .card-url {
       font-size: 0.8rem;
-      color: #6b7280;
-      margin-top: 8px;
+      color: var(--color-muted);
       word-break: break-all;
     }
-    .loading, .error {
-      text-align: center;
-      padding: 40px;
-      font-size: 1.1rem;
-    }
-    .loading { color: #6b7280; }
-    .error { color: #991b1b; background: #fee2e2; border-radius: 8px; }
     .stats {
       text-align: center;
-      color: #6b7280;
+      color: var(--color-muted);
       font-size: 0.9rem;
       margin: 1rem 0;
+    }
+    .no-results {
+      grid-column: 1/-1;
+      text-align: center;
+      color: #9ca3af;
+      padding: 2rem;
     }
   </style>
 </head>
 <body>
   <div class="container">
     <header>
-      <h1>링크 카드 갤러리</h1>
-      <p class="subtitle"><code>srclist</code> 파일 기반 자동 생성</p>
+      <h1>The global human impact on biodiversity</h1>
+      <p class="subtitle">Nature 논문 및 관련 자료</p>
     </header>
 
     <div class="search-box">
-      <input type="search" id="search" placeholder="제목, 캡션, URL로 검색..." />
+      <input type="search" id="search" placeholder="제목, 캡션, URL 검색..." />
     </div>
 
-    <div id="stats" class="stats">srclist 로딩 중...</div>
+    <div id="stats" class="stats">총 4개 자료</div>
 
-    <div id="loading" class="loading">
-      <i class="fas fa-spinner fa-spin"></i> srclist 파일 읽는 중...
+    <div id="cards" class="grid">
+      <!-- 데이터 내장: 아래에 직접 삽입 -->
+      <div class="card">
+        <a href="https://www.nature.com/articles/s41586-025-08752-2" target="_blank">
+          <div class="card-title">"The global human impact on biodiversity"</div>
+          <div class="card-caption">Nature, 2025. 인간 압력이 생물 다양성에 미치는 글로벌 메타분석. 2,133개 연구 기반.</div>
+          <div class="card-url">nature.com/articles/s41586-025-08752-2</div>
+        </a>
+      </div>
+
+      <div class="card">
+        <a href="https://github.com/fkeck/metabeta" target="_blank">
+          <div class="card-title">The global human impact on biodiversity 제공 데이터 레포</div>
+          <div class="card-caption">R 코드, data.json, 출처 메타데이터 포함. 논문 재현 가능.</div>
+          <div class="card-url">github.com/fkeck/metabeta</div>
+        </a>
+      </div>
+
+      <div class="card">
+        <a href="https://github.com/fkeck/metabeta/blob/main/data/data.json" target="_blank">
+          <div class="card-title">원본 data json</div>
+          <div class="card-caption">모든 연구, DOI, 초록, 효과 크기 포함. 3,667개 비교 데이터.</div>
+          <div class="card-url">github.com/fkeck/metabeta/.../data.json</div>
+        </a>
+      </div>
+
+      <div class="card">
+        <a href="https://github.com/mg10240/stat-echo/" target="_blank">
+          <div class="card-title">기타 자료</div>
+          <div class="card-caption">통계, 생태, 데이터 분석 관련 추가 자료 및 스크립트.</div>
+          <div class="card-url">github.com/mg10240/stat-echo</div>
+        </a>
+      </div>
     </div>
-    <div id="error" class="error" style="display:none;"></div>
-    <div id="cards" class="grid"></div>
   </div>
 
   <script>
-    const SRCLIST_FILE = 'srclist'; // 동일 경로
-    const loadingEl = document.getElementById('loading');
-    const errorEl = document.getElementById('error');
-    const cardsContainer = document.getElementById('cards');
+    // 검색 기능 (외부 의존성 없이 순수 JS)
     const searchInput = document.getElementById('search');
+    const cards = document.querySelectorAll('.card');
     const statsEl = document.getElementById('stats');
 
-    let allItems = [];
-
-    // 1. srclist 파일 읽기
-    fetch(SRCLIST_FILE)
-      .then(r => {
-        if (!r.ok) throw new Error(`파일 없음: ${SRCLIST_FILE}`);
-        return r.text();
-      })
-      .then(text => {
-        const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
-        const items = [];
-        for (let i = 0; i < lines.length; i += 3) {
-          const url = lines[i];
-          const caption = lines[i + 1] || '';
-          if (url && url.startsWith('http')) {
-            items.push({ url, caption });
-          }
-        }
-        if (items.length === 0) throw new Error('유효한 링크 없음');
-        allItems = items;
-        loadingEl.style.display = 'none';
-        renderCards(allItems);
-        updateStats(allItems.length);
-      })
-      .catch(err => {
-        loadingEl.style.display = 'none';
-        errorEl.style.display = 'block';
-        errorEl.innerHTML = `오류: ${err.message}<br><small><code>srclist</code> 파일 확인</small>`;
-      });
-
-    // 2. 카드 생성
-    function createCard(item) {
-      const card = document.createElement('div');
-      card.className = 'card';
-      card.innerHTML = `
-        <a href="${item.url}" target="_blank">
-          <div class="card-title">${escape(getTitle(item))}</div>
-          <div class="card-caption">${escape(item.caption)}</div>
-          <div class="card-url">${escape(item.url)}</div>
-        </a>
-      `;
-      return card;
-    }
-
-    function getTitle(item) {
-      // 캡션에서 제목 추출 (괄호 앞)
-      const match = item.caption.match(/^(.+?)(?:\s*\(|$)/);
-      return match ? match[1].trim() : item.caption || new URL(item.url).hostname;
-    }
-
-    function renderCards(items).card-title {
-      cardsContainer.innerHTML = '';
-      if (items.length === 0) {
-        cardsContainer.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:#9ca3af;">결과 없음</p>';
-        return;
-      }
-      items.forEach(item => {
-        const card = createCard(item);
-        cardsContainer.appendChild(card);
-      });
-    }
-
-    function updateStats(count) {
-      statsEl.textContent = `총 ${count}개 링크`;
-    }
-
-    function escape(str) {
-      if (!str) return '';
-      const div = document.createElement('div');
-      div.textContent = str;
-      return div.innerHTML;
-    }
-
-    // 검색
     searchInput.addEventListener('input', () => {
-      const q = searchInput.value.toLowerCase().trim();
-      const filtered = allItems.filter(item =>
-        item.url.toLowerCase().includes(q) ||
-        (item.caption && item.caption.toLowerCase().includes(q))
-      );
-      renderCards(filtered);
+      const query = searchInput.value.toLowerCase().trim();
+      let visible = 0;
+
+      cards.forEach(card => {
+        const text = card.textContent.toLowerCase();
+        const match = text.includes(query);
+        card.style.display = match ? '' : 'none';
+        if (match) visible++;
+      });
+
+      statsEl.textContent = query ? `검색 결과: ${visible}개` : `총 4개 자료`;
+      if (visible === 0) {
+        if (!document.querySelector('.no-results')) {
+          const msg = document.createElement('div');
+          msg.className = 'no-results';
+          msg.textContent = '검색 결과 없음';
+          document.getElementById('cards').appendChild(msg);
+        }
+      } else {
+        const noResult = document.querySelector('.no-results');
+        if (noResult) noResult.remove();
+      }
     });
   </script>
 </body>
