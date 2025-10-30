@@ -20,6 +20,7 @@ ecosystem_data.csv 및 normal_ecosystem_data.csv 입니다. 파이썬의 json �
 각 파일은 하단에 명시한 라이선스를 따릅니다.
 
 - index.html
+
 The MIT License (MIT)
 
 Copyright (c) 2025 mg10240
@@ -30,13 +31,16 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 - 알파.png
+  
 <a href="https://github.com/mg10240/stat-echo/">알파.png</a> by <a href="https://github.com/mg10240/">mg10240</a> is marked <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0 1.0</a><img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/zero.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;">
 
 - 베타.png
+  
 <a href="https://github.com/mg10240/stat-echo/">베타.png</a> by <a href="https://github.com/mg10240/">mg10240</a> is marked <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0 1.0</a><img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/zero.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;">
   
 - normal_ecosystem_data.csv
-- GNU General Public License
+  
+GNU General Public License
 ==========================
 
 _Version 3, 29 June 2007_  
@@ -633,6 +637,7 @@ License. But first, please read
 &lt;<http://www.gnu.org/philosophy/why-not-lgpl.html>&gt;.
 
 - ecosystem_data.csv
+
 GNU General Public License
 ==========================
 
