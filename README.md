@@ -12,7 +12,7 @@ https://mg10240.github.io/stat-echo/ 를 참고해 주세요!
 
 ### 가공 데이터
 ecosystem_data.csv 및 normal_ecosystem_data.csv 입니다. 파이썬의 json 라이브러리 등을 사용하여 직접 변환을 실시하였습니다.
-원본 https://github.com/fkeck/metabeta의 https://github.com/fkeck/metabeta/blob/main/data/data.json를 가공한 자료입니다.
+원본 https://github.com/fkeck/metabeta 의 https://github.com/fkeck/metabeta/blob/main/data/data.json 를 가공한 자료입니다.
 원본에 명시된 라이선스를 따릅니다. 본 문서 하단의 License 색션을 확인해 주시길 바랍니다.
 
 ## License
